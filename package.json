@@ -1,0 +1,42 @@
+{
+  "name": "sugestor-de-receitas",
+  "version": "0.0.1",
+  "description": "WebSite de sugestão de receitas",
+  "homepage": "https://github.com/cris-resende/sugestor-de-receitas#readme",
+  "bugs": {
+    "url": "https://github.com/cris-resende/sugestor-de-receitas/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cris-resende/sugestor-de-receitas.git"
+  },
+  "license": "MIT",
+  "author": "Cristyan resende",
+  "main": "src/index.jsx",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "react-scripts start",
+    "build": "react-scripts build"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-scripts": "5.0.0"
+  },
+  "devDependencies": {
+    "sass": "1.32.0",
+    "loader-utils": "3.2.1"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
