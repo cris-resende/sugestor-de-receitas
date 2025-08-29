@@ -2,7 +2,6 @@
   "name": "sugestor-de-receitas",
   "version": "0.0.1",
   "description": "WebSite de sugestão de receitas",
-  "homepage": "https://github.com/cris-resende/sugestor-de-receitas#readme",
   "bugs": {
     "url": "https://github.com/cris-resende/sugestor-de-receitas/issues"
   },
@@ -16,7 +15,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "react-scripts start",
-    "build": "react-scripts build"
+    "build": "react-scripts build",
+    "deploy": "npm run build && firebase deploy"
   },
   "dependencies": {
     "react": "^19.0.0",
