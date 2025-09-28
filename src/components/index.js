@@ -1,10 +1,20 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App';
-const root = createRoot(document.getElementById('root'));
-
-root.render(
-  <StrictMode>
-    <App />
-  </StrictMode>
-)
+export {default as Alert} from './custom/Alert';
+export {default as AppBar} from './custom/AppBar';
+export {default as Avatar} from './custom/Avatar';
+export {default as Badge} from './custom/Badge';
+export {default as BottomNavigation} from './custom/BottomNavigation';
+export {default as Button} from './default/Button';
+export {default as Card} from './default/Card';
+export {default as CardActions} from './default/Card';
+export {default as CardContent} from './default/Card';
+export {default as Fab} from './default/Fab';
+export {default as Grid} from './default/Grid';
+export {default as Modal} from './default/Modal';
+export {default as Pagination} from './default/Pagination';
+export {default as Rating} from './default/Rating';
+export {default as Searchbar} from './custom/Searchbar';
+export {default as Snackbar} from './default/Snackbar';
+export {default as Stack} from './custom/Stack';
+export {default as Table} from './default/Table';
+export {default as TextField} from './custom/TextField';
+export {default as Typography} from './default/Typography';

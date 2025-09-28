@@ -1,5 +1,9 @@
+import Login from './pages/Login';
+
 const App = () => {
-  consle.log('supabase', supabase);
-  return <h1>Sugestão de Receitas com base em ingredientes selecionados...</h1>;
-}
+  return (
+    <Login />
+  );
+};
+
 export default App;
