@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardActions, Button, TextField, Typography, Snackbar, Avatar, Grid, Stack } from '../../components';
+import Authentication from '../../services/Authentication';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -8,28 +10,55 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     if (!name || !email || !password || !confirmPassword) {
       setSnackbarMsg('Preencha todos os campos!');
       setShowSnackbar(true);
+      setLoading(false);
       return;
     }
     if (password !== confirmPassword) {
       setSnackbarMsg('As senhas não coincidem!');
       setShowSnackbar(true);
+      setLoading(false);
       return;
     }
-    // Aqui você pode adicionar a lógica de cadastro (ex: integração com Supabase)
-    setSnackbarMsg('Cadastro realizado com sucesso!');
-    setShowSnackbar(true);
+
+    try {
+      await Authentication.register(email, password);
+
+      setSnackbarMsg('Cadastro realizado com sucesso! Verifique seu e-mail para confirmar a conta.');
+      setShowSnackbar(true);
+
+      // Limpar os campos do formulário
+      setName('');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
+
+    } catch (error) {
+      console.error('Erro ao registrar:', error);
+      setSnackbarMsg(error.message);
+      setShowSnackbar(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)' }}>
-      <Grid item xs={11} sm={8} md={4}>
-        <Card style={{ padding: 32, borderRadius: 16, boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}>
+    <Grid
+      container
+      justifyContent="center"
+      alignItems="center"
+      style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', padding: '16px' }}
+    >
+      <Grid item xs={12} sm={8} md={4}>
+        <Card style={{ padding: 24, borderRadius: 16, boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}>
           <CardContent>
             <form style={{ width: '100%' }} onSubmit={handleRegister}>
               <Stack direction="column" alignItems="center" spacing={2}>
@@ -75,22 +104,32 @@ const Register = () => {
                 </Stack>
                 <Stack style={{ width: '100%' }}>
                   <CardActions style={{ justifyContent: 'center', padding: 0 }}>
-                    <Button type="submit" variant="contained" color="primary" style={{ width: '100%' }}>
-                      Cadastrar
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      style={{ width: '100%' }}
+                      onClick={handleRegister}
+                      disabled={loading}
+                    >
+                      {loading ? 'Cadastrando...' : 'Cadastrar'}
                     </Button>
                   </CardActions>
                 </Stack>
+                <Typography variant="body2" style={{ marginTop: 16 }}>
+                  Já tem uma conta? <Link to="/login">Entre aqui</Link>
+                </Typography>
               </Stack>
             </form>
           </CardContent>
         </Card>
-        <Snackbar
-          open={showSnackbar}
-          autoHideDuration={3000}
-          onClose={() => setShowSnackbar(false)}
-          message={snackbarMsg}
-        />
       </Grid>
+      <Snackbar
+        open={showSnackbar}
+        autoHideDuration={4000}
+        onClose={() => setShowSnackbar(false)}
+        message={snackbarMsg}
+      />
     </Grid>
   );
 };

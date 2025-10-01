@@ -1,6 +1,8 @@
-const Modal = () => {
+import { Modal as MuiModal} from '@mui/material';
+
+const Modal = (props) => {
 	return (
-		<div>Aqui entrará um Modal</div>
+		<MuiModal {...props}>{props.children}</MuiModal>
 	);
 };
 export default Modal;
