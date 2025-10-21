@@ -1,22 +1,31 @@
-import React, { useState } from 'react';
-import { Card, CardContent, Button, TextField, Typography, Stack, Grid } from '../../components';
-import Authentication from '../../services/Authentication';
+import React, { useState } from "react";
+import {
+  Card,
+  CardContent,
+  Button,
+  TextField,
+  Typography,
+  Stack,
+  Grid,
+} from "../../components";
+import Authentication from "../../services/Authentication";
 
 const ForgotPasswordModal = ({ onConfirm }) => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
+  // Função para enviar a requisição de redefinição de senha ao Supabase.
   const handleResetPassword = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage('');
+    setMessage("");
 
     try {
       await Authentication.resetPassword(email);
-      setMessage('Verifique seu e-mail para o link de redefinição de senha.');
+      setMessage("Verifique seu e-mail para o link de redefinição de senha.");
     } catch (error) {
-      console.error('Erro ao redefinir a senha:', error);
+      console.error("Erro ao redefinir a senha:", error);
       setMessage(error.message);
     } finally {
       setLoading(false);
@@ -24,21 +33,39 @@ const ForgotPasswordModal = ({ onConfirm }) => {
   };
 
   return (
-    <Grid 
-      container 
-      justifyContent="center" 
-      alignItems="center" 
-      style={{ minHeight: '100vh' }}
+    <Grid
+      container
+      justifyContent="center"
+      alignItems="center"
+      style={{ minHeight: "100vh", padding: "16px" }} // Centraliza o modal na tela
     >
       <Grid item xs={12} sm={8} md={4}>
-        <Card style={{ padding: 24, borderRadius: 16, boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}>
+        <Card
+          elevation={8}
+          style={{
+            padding: 32,
+            borderRadius: 20, // Padrão arredondado
+            boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
+          }}
+        >
           <CardContent>
             <form onSubmit={handleResetPassword}>
-              <Stack spacing={2} style={{ width: '100%' }}>
-                <Typography variant="h5" style={{ fontWeight: 700, marginBottom: 8, textAlign: 'center' }}>
+              <Stack spacing={3} style={{ width: "100%" }}>
+                <Typography
+                  variant="h5"
+                  style={{
+                    fontWeight: 800,
+                    textAlign: "center",
+                    color: "#388e3c", // Cor temática
+                  }}
+                >
                   Esqueceu a senha?
                 </Typography>
-                <Typography variant="body2" color="textSecondary" style={{ textAlign: 'center' }}>
+                <Typography
+                  variant="body2"
+                  color="textSecondary"
+                  style={{ textAlign: "center" }}
+                >
                   Digite seu e-mail para receber um link de redefinição.
                 </Typography>
                 <TextField
@@ -48,18 +75,53 @@ const ForgotPasswordModal = ({ onConfirm }) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  variant="outlined"
+                  InputProps={{ style: { borderRadius: 10 } }}
+                  InputLabelProps={{ style: { color: "#388e3c" } }}
                 />
                 {message && (
-                  <Typography variant="body2" style={{ color: message.includes('Verifique') ? 'green' : 'red', textAlign: 'center' }}>
+                  <Typography
+                    variant="body2"
+                    style={{
+                      color: message.includes("Verifique")
+                        ? "#388e3c"
+                        : "#f44336",
+                      textAlign: "center",
+                      fontWeight: 600,
+                    }}
+                  >
                     {message}
                   </Typography>
                 )}
-                <Stack direction="row" spacing={2} justifyContent="center" style={{ marginTop: 16, width: '100%' }}>
-                  <Button onClick={onConfirm} color="secondary" style={{ width: '50%' }}>
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  justifyContent="center"
+                  style={{ marginTop: 16, width: "100%" }}
+                >
+                  <Button
+                    onClick={onConfirm}
+                    variant="outlined"
+                    style={{
+                      width: "50%",
+                      borderRadius: 10,
+                      color: "#f44336",
+                      borderColor: "#f44336",
+                    }} // Cor de destaque para Cancelar
+                  >
                     Cancelar
                   </Button>
-                  <Button type="submit" variant="contained" color="primary" disabled={loading} style={{ width: '50%' }}>
-                    {loading ? 'Enviando...' : 'Enviar Link'}
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    disabled={loading}
+                    style={{
+                      width: "50%",
+                      borderRadius: 10,
+                      backgroundColor: "#388e3c",
+                    }} // Cor temática
+                  >
+                    {loading ? "Enviando..." : "Enviar Link"}
                   </Button>
                 </Stack>
               </Stack>

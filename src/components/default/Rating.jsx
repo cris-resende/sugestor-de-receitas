@@ -1,6 +1,6 @@
-const Rating = () => {
-	return (
-		<div>Aqui entrará um Rating</div>
-	);
+import { Rating as MuiRating } from "@mui/material";
+
+const Rating = (props) => {
+  return <MuiRating {...props}>{props.children}</MuiRating>;
 };
 export default Rating;
