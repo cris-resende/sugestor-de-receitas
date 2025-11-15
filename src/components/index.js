@@ -1,4 +1,7 @@
 export { default as Avatar } from "./custom/Avatar";
+export { default as AppBar } from "./custom/AppBar";
+export { default as BottomNavigation } from "./custom/BottomNavigation";
+export { default as Box } from "./default/Box";
 export { default as Button } from "./default/Button";
 export { default as Card } from "./default/Card";
 export { default as CardActions } from "./default/Card";

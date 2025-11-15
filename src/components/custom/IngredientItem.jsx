@@ -10,13 +10,12 @@ const IngredientItem = ({ name, icon, isSelected, onClick }) => {
       style={{
         padding: "12px 8px",
         borderRadius: "12px",
-        // ESTILO CONDICIONAL PARA FEEDBACK VISUAL
         boxShadow: isSelected
           ? "0 0 0 2px #1976d2"
           : "0 1px 4px rgba(0,0,0,0.1)",
         cursor: "pointer",
         transition: "all 0.2s",
-        backgroundColor: isSelected ? "#e3f2fd" : "#ffffff", // FEEDBACK VISUAL
+        backgroundColor: isSelected ? "#e3f2fd" : "#ffffff",
         textAlign: "center",
         height: "100%",
         display: "flex",

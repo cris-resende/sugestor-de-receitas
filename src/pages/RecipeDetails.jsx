@@ -13,6 +13,7 @@ import {
 } from "../components";
 import RecipeAPI from "../services/RecipeAPI";
 import Database from "../services/Database";
+import { supabase } from "../services/SupabaseClient"; // Para obter o usuário logado
 
 const RecipeDetails = () => {
   const { recipeId } = useParams();
@@ -27,14 +28,17 @@ const RecipeDetails = () => {
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState("");
 
-  // MOCK: UUID Mock que o banco aceita
-  const MOCK_USER_ID = "00000000-0000-0000-0000-000000000001";
+  // NOVO ESTADO: Armazena o ID real do usuário logado
+  const [currentUserId, setCurrentUserId] = useState(null);
 
   // Função para salvar (ou remover) a receita como favorita
   const handleToggleFavorite = async () => {
+    if (!currentUserId) return;
+
     try {
+      // Lógica de CREATE/DELETE, usando o ID real
       const isFav = await Database.toggleFavorite(
-        MOCK_USER_ID,
+        currentUserId,
         Number(recipeId),
         recipe.title,
         isFavorited
@@ -55,6 +59,8 @@ const RecipeDetails = () => {
 
   // Função para lidar com a classificação por estrelas e comentário
   const handleRatingChange = async (newValue) => {
+    if (!currentUserId) return; // Garante que o usuário esteja logado
+
     // Usa a nota atual se for clique no botão
     const ratingValue =
       newValue === null || newValue === 0 ? userRating : newValue;
@@ -64,8 +70,9 @@ const RecipeDetails = () => {
     // Salva imediatamente se a nota for alterada nas estrelas
     if (ratingValue > 0) {
       try {
+        // Usa o ID real para salvar o rating
         await Database.saveRating(
-          MOCK_USER_ID,
+          currentUserId,
           Number(recipeId),
           ratingValue,
           userComment
@@ -102,9 +109,18 @@ const RecipeDetails = () => {
       const data = await RecipeAPI.getRecipeDetails(recipeId);
       setRecipe(data);
 
-      // Verificação de status de Favorito
-      const isFav = await Database.isFavorited(MOCK_USER_ID, Number(recipeId));
-      setIsFavorited(isFav);
+      // Obtém o usuário logado para buscas condicionais
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      const userId = user?.id;
+      setCurrentUserId(userId);
+
+      // Se o usuário estiver logado, verifica se a receita está favoritada
+      if (userId) {
+        const isFav = await Database.isFavorited(userId, Number(recipeId));
+        setIsFavorited(isFav);
+      }
     } catch (err) {
       setError("Não foi possível carregar os detalhes desta receita.");
     } finally {
@@ -170,7 +186,7 @@ const RecipeDetails = () => {
         container
         justifyContent="center"
         style={{
-          // Fundo temático (similar ao Login)
+          // Fundo temático
           background: "linear-gradient(135deg, #e0f2f7 0%, #c4e0e8 100%)",
           padding: "16px 8px",
         }}
@@ -190,7 +206,7 @@ const RecipeDetails = () => {
                 variant="h4"
                 style={{
                   fontWeight: 800,
-                  color: "#388e3c", // Cor temática verde
+                  color: "#388e3c", // Cor temática
                   textAlign: "left",
                   flexGrow: 1,
                 }}
@@ -209,6 +225,7 @@ const RecipeDetails = () => {
                   // Cores temáticas
                   background: isFavorited ? "#F44336" : "#388e3c",
                 }}
+                disabled={!currentUserId} // Desabilita se o ID for nulo (não logado)
               >
                 <Typography style={{ fontSize: "20px", color: "#fff" }}>
                   {isFavorited ? "★" : "☆"}
@@ -351,7 +368,7 @@ const RecipeDetails = () => {
                       >
                         <Typography
                           variant="body2"
-                          style={{ fontWeight: 700, color: "#1976d2" }}
+                          style={{ fontWeight: 700, color: "#388e3c" }}
                         >
                           •
                         </Typography>

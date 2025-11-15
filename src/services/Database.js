@@ -18,7 +18,7 @@ const list = async (table, filter, limit) => {
 };
 
 const Database = {
-  // Funções de manipulação de dados CRUD
+  // Manipulação de dados CRUD
   create: async (table, data) => {
     return await supabase.from(table).insert([data]).select();
   },
@@ -29,7 +29,6 @@ const Database = {
     return await supabase.from(table).delete().eq("id", id).select();
   },
 
-  // Busca apenas um registro
   find: async (table, id) => {
     const { data, error } = await list(table, { id: id }, 1);
     if (error) {
@@ -38,7 +37,7 @@ const Database = {
     return data ? data[0] : null;
   },
 
-  // Implementação da busca de ingredientes traduzidos
+  // Busca de ingredientes traduzidos
   getTranslatedIngredients: async () => {
     const { data, error } = await supabase
       .from("ingredientes")
@@ -51,13 +50,42 @@ const Database = {
     return data;
   },
 
-  // FUNÇÕES DE FAVORITOS (mantidas)
+  // 🆕 FUNÇÃO AUXILIAR: Busca o rating específico de uma receita
+  getSingleRecipeRating: async (userId, recipeId) => {
+    const { data, error } = await supabase
+      .from("recipe_ratings")
+      .select("ratingValue, comment") // Puxa apenas os campos de rating e comentário
+      .eq("user_id", userId)
+      .eq("recipe_id", recipeId)
+      .single();
+
+    if (error && error.code !== "PGRST116") {
+      // Ignora erro se for 'No rows found'
+      console.error("Error fetching single rating:", error);
+      throw error;
+    }
+    return data; // Retorna { ratingValue, comment } ou null
+  },
+
+  // FUNÇÃO CORRIGIDA: Busca a lista básica de favoritos
+  getUserFavorites: async (userId) => {
+    const { data, error } = await supabase
+      .from("user_favorites")
+      .select("id, recipe_id, recipe_title") // Puxa apenas as colunas salvas
+      .eq("user_id", userId);
+
+    if (error) {
+      console.error("Error fetching user favorites:", error);
+      throw error;
+    }
+    return data; // Retorna array de favoritos básicos
+  },
+
   isFavorited: async (userId, recipeId) => {
     const { data, error } = await supabase
       .from("user_favorites")
       .select("id")
-      .eq("user_id", userId)
-      .eq("recipe_id", recipeId)
+      .match({ user_id: userId, recipe_id: recipeId })
       .single();
 
     return data !== null;
@@ -75,8 +103,7 @@ const Database = {
       const { error } = await supabase
         .from(tableName)
         .delete()
-        .eq("user_id", userId)
-        .eq("recipe_id", recipeId);
+        .match({ user_id: userId, recipe_id: recipeId });
 
       if (error) throw error;
       return false;
@@ -100,14 +127,14 @@ const Database = {
     // Converte o recipeId para NUMBER no início
     const numericRecipeId = Number(recipeId);
 
-    // CORRIGIDO: Nome da coluna alterado para 'comment' (conforme a tabela)
+    // Dados a serem atualizados/inseridos
     const updateData = { ratingValue: ratingValue, comment: comment };
 
-    // 1. Tenta ATUALIZAR a classificação se ela já existir
+    // 1. Tenta ATUALIZAR a classificação se ela já existir, usando .match para robustez
     const { data, error: updateError } = await supabase
       .from(tableName)
       .update(updateData)
-      .match({ user_id: userId, recipe_id: numericRecipeId }) // Uso do .match para robustez
+      .match({ user_id: userId, recipe_id: numericRecipeId })
       .select();
 
     if (updateError && updateError.code !== "PGRST116") {
@@ -120,7 +147,7 @@ const Database = {
         user_id: userId,
         recipe_id: numericRecipeId,
         ratingValue: ratingValue,
-        comment: comment, // CORRIGIDO: Nome da coluna
+        comment: comment,
       };
       const { error: createError } = await Database.create(
         tableName,
@@ -132,7 +159,7 @@ const Database = {
     return true;
   },
 
-  // Funções não implementadas (mantidas)
+  // Funções não implementadas
   list: async (table) => {
     const { data, error } = await supabase.from(table).select("*");
     if (error) {

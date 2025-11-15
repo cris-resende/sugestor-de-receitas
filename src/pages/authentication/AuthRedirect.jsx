@@ -1,46 +1,44 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "../../services/SupabaseClient";
-import { Typography } from "../../components"; // Usamos Typography para a mensagem de loading
+import { Typography } from "../../components";
 
 const AuthRedirect = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    // Checa o hash da URL para capturar o parâmetro 'type=recovery' do Supabase.
-    const urlParams = new URLSearchParams(window.location.hash.substring(1));
-    const isRecoveryUrl = urlParams.get("type") === "recovery";
+    const params = new URLSearchParams(location.hash.substring(1));
+    const type = params.get("type");
 
-    if (isRecoveryUrl) {
-      // Se for um link de recuperação, redireciona imediatamente para o formulário de nova senha.
+    // Redireciona imediatamente para a página de redefinição se for um link de recuperação.
+    if (type === "recovery") {
       setLoading(false);
       navigate("/update-password", { replace: true });
       return;
     }
 
-    // Listener de Autenticação para lidar com login/logout normal.
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setLoading(false);
 
+        // Se houver uma sessão válida, redireciona para a Home.
         if (session) {
-          // Se há sessão (usuário logado), redireciona para a home.
           navigate("/home", { replace: true });
         } else {
-          // Se não há sessão, redireciona para o login.
+          // Caso não haja sessão, redireciona para o Login.
           navigate("/login", { replace: true });
         }
       }
     );
 
-    // Limpa o listener ao desmontar o componente.
     return () => {
       if (authListener && authListener.subscription) {
         authListener.subscription.unsubscribe();
       }
     };
-  }, [navigate]);
+  }, [navigate, location.hash]);
 
   return (
     <div
