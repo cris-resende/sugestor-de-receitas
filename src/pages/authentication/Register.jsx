@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Card,
@@ -23,7 +23,7 @@ const Register = () => {
   const [snackbarMsg, setSnackbarMsg] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Função para lidar com o envio do formulário de registro (criação de nova conta).
+  // Lida com o envio do formulário de registro.
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -50,7 +50,6 @@ const Register = () => {
       );
       setShowSnackbar(true);
 
-      // Limpar os campos do formulário
       setName("");
       setEmail("");
       setPassword("");
@@ -72,7 +71,6 @@ const Register = () => {
       alignItems="center"
       style={{
         minHeight: "100vh",
-        // Estilo temático de fundo (mesmo do Login)
         background: "linear-gradient(135deg, #e0f2f7 0%, #c4e0e8 100%)",
         backgroundImage: 'url("/images/food_background.png")',
         backgroundSize: "cover",
@@ -95,7 +93,6 @@ const Register = () => {
           <CardContent>
             <form style={{ width: "100%" }} onSubmit={handleRegister}>
               <Stack direction="column" alignItems="center" spacing={3}>
-                {/* Logo do Site */}
                 <Avatar
                   src="/logo192.png"
                   alt="Recipe AI Logo"

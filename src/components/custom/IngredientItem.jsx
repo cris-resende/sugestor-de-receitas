@@ -1,10 +1,6 @@
-import React from "react";
-// O caminho de importação está bom, assumindo que "../index.js" funciona
 import { Card, Typography, Stack, Avatar } from "../index.js";
 
 const IngredientItem = ({ name, icon, isSelected, onClick }) => {
-  // A função handleClick é removida. Usamos o onClick diretamente.
-
   return (
     <Card
       style={{
@@ -22,7 +18,6 @@ const IngredientItem = ({ name, icon, isSelected, onClick }) => {
         flexDirection: "column",
         justifyContent: "center",
       }}
-      // Apenas passa a função onClick diretamente para o Card
       onClick={onClick}
     >
       <Stack direction="column" spacing={0.5} alignItems="center">
@@ -30,7 +25,6 @@ const IngredientItem = ({ name, icon, isSelected, onClick }) => {
           style={{
             width: 44,
             height: 44,
-            // FEEDBACK VISUAL DO AVATAR
             backgroundColor: isSelected ? "#1976d2" : "#9e9e9e",
             fontSize: "20px",
           }}

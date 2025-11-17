@@ -1,6 +1,6 @@
 import { supabase } from "./SupabaseClient";
 
-// Função auxiliar busca dados de forma genérica
+// Busca os dados de forma genérica
 const list = async (table, filter, limit) => {
   let query = supabase.from(table).select("*");
 
@@ -50,35 +50,34 @@ const Database = {
     return data;
   },
 
-  // 🆕 FUNÇÃO AUXILIAR: Busca o rating específico de uma receita
+  // Busca o rating específico de uma receita
   getSingleRecipeRating: async (userId, recipeId) => {
     const { data, error } = await supabase
       .from("recipe_ratings")
-      .select("ratingValue, comment") // Puxa apenas os campos de rating e comentário
+      .select("ratingValue, comment")
       .eq("user_id", userId)
       .eq("recipe_id", recipeId)
       .single();
 
     if (error && error.code !== "PGRST116") {
-      // Ignora erro se for 'No rows found'
       console.error("Error fetching single rating:", error);
       throw error;
     }
-    return data; // Retorna { ratingValue, comment } ou null
+    return data;
   },
 
-  // FUNÇÃO CORRIGIDA: Busca a lista básica de favoritos
+  // Busca a lista básica de favoritos
   getUserFavorites: async (userId) => {
     const { data, error } = await supabase
       .from("user_favorites")
-      .select("id, recipe_id, recipe_title") // Puxa apenas as colunas salvas
+      .select("id, recipe_id, recipe_title")
       .eq("user_id", userId);
 
     if (error) {
       console.error("Error fetching user favorites:", error);
       throw error;
     }
-    return data; // Retorna array de favoritos básicos
+    return data;
   },
 
   isFavorited: async (userId, recipeId) => {
@@ -120,17 +119,13 @@ const Database = {
     }
   },
 
-  // FUNÇÃO PARA SALVAR/ATUALIZAR CLASSIFICAÇÃO COM COMENTÁRIO
+  // Salva ou atualiza a classificação de uma receita
   saveRating: async (userId, recipeId, ratingValue, comment = null) => {
     const tableName = "recipe_ratings";
-
-    // Converte o recipeId para NUMBER no início
     const numericRecipeId = Number(recipeId);
 
-    // Dados a serem atualizados/inseridos
     const updateData = { ratingValue: ratingValue, comment: comment };
 
-    // 1. Tenta ATUALIZAR a classificação se ela já existir, usando .match para robustez
     const { data, error: updateError } = await supabase
       .from(tableName)
       .update(updateData)
@@ -141,7 +136,6 @@ const Database = {
       throw updateError;
     }
 
-    // 2. Se nenhuma linha foi atualizada (não existia), CRIA o novo rating
     if (!data || data.length === 0) {
       const dataToSave = {
         user_id: userId,
@@ -159,7 +153,6 @@ const Database = {
     return true;
   },
 
-  // Funções não implementadas
   list: async (table) => {
     const { data, error } = await supabase.from(table).select("*");
     if (error) {

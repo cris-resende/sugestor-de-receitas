@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -17,7 +17,6 @@ const UpdateUsernameModal = ({
   onUpdateSuccess,
   onClose,
 }) => {
-  // Usamos o nome atual (se existir) ou o email como valor inicial
   const [newUsername, setNewUsername] = useState(
     currentName || currentEmail.split("@")[0] || ""
   );
@@ -43,7 +42,7 @@ const UpdateUsernameModal = ({
 
       // Chama a função de sucesso no Profile para fechar o modal e atualizar o estado do componente pai
       setTimeout(() => {
-        onUpdateSuccess(newUsername); // Passa o novo nome para o Profile
+        onUpdateSuccess(newUsername);
         onClose();
       }, 1000);
     } catch (error) {

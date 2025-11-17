@@ -1,6 +1,9 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
-import { AppBar as MuiAppBar, Toolbar as MuiToolbar } from "@mui/material";
+import {
+  AppBar as MuiAppBar,
+  Toolbar as MuiToolbar,
+  textFieldClasses,
+} from "@mui/material";
 import { Typography, Button, Stack } from "../";
 
 const AppBar = () => {
@@ -15,6 +18,7 @@ const AppBar = () => {
           component="div"
           sx={{
             flexGrow: 1,
+            textAlign: "center",
             color: "white",
             fontWeight: 600,
             cursor: "pointer",

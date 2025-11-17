@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -15,7 +15,7 @@ const ForgotPasswordModal = ({ onConfirm }) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  // Função para enviar a requisição de redefinição de senha ao Supabase.
+  // Envia a requisição de redefinição de senha ao Supabase.
   const handleResetPassword = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -37,14 +37,14 @@ const ForgotPasswordModal = ({ onConfirm }) => {
       container
       justifyContent="center"
       alignItems="center"
-      style={{ minHeight: "100vh", padding: "16px" }} // Centraliza o modal na tela
+      style={{ minHeight: "100vh", padding: "16px" }}
     >
       <Grid item xs={12} sm={8} md={4}>
         <Card
           elevation={8}
           style={{
             padding: 32,
-            borderRadius: 20, // Padrão arredondado
+            borderRadius: 20,
             boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
           }}
         >
@@ -56,7 +56,7 @@ const ForgotPasswordModal = ({ onConfirm }) => {
                   style={{
                     fontWeight: 800,
                     textAlign: "center",
-                    color: "#388e3c", // Cor temática
+                    color: "#388e3c",
                   }}
                 >
                   Esqueceu a senha?
@@ -107,7 +107,7 @@ const ForgotPasswordModal = ({ onConfirm }) => {
                       borderRadius: 10,
                       color: "#f44336",
                       borderColor: "#f44336",
-                    }} // Cor de destaque para Cancelar
+                    }}
                   >
                     Cancelar
                   </Button>
@@ -119,7 +119,7 @@ const ForgotPasswordModal = ({ onConfirm }) => {
                       width: "50%",
                       borderRadius: 10,
                       backgroundColor: "#388e3c",
-                    }} // Cor temática
+                    }}
                   >
                     {loading ? "Enviando..." : "Enviar Link"}
                   </Button>

@@ -14,7 +14,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Rota de padrão */}
+        {/* Rota padrão */}
         <Route path="/" element={<AuthRedirect />} />
 
         {/* Rotas de Autenticação */}

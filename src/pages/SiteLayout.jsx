@@ -1,17 +1,15 @@
-import React from "react";
 import { Box, useMediaQuery } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import BottomNavigation from "../components/custom/BottomNavigation";
 import AppBar from "../components/custom/AppBar";
 
 const SiteLayout = () => {
-  // Media query para determinar se estamos em mobile
+  // Media query mobile
   const isMobile = useMediaQuery("(max-width:600px)");
   const bottomPadding = isMobile ? "56px" : "0px";
 
   return (
     <Box
-      // O Box principal encapsula todo o layout
       sx={{
         minHeight: "100vh",
         paddingBottom: bottomPadding,

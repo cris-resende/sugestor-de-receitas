@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -14,7 +14,6 @@ import RecipeAPI from "../services/RecipeAPI";
 import Database from "../services/Database";
 
 const Home = () => {
-  // ESTADOS
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [ingredientsList, setIngredientsList] = useState([]);
@@ -23,7 +22,7 @@ const Home = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [showAllIngredients, setShowAllIngredients] = useState(false);
 
-  // LÓGICA: Adiciona ou remove o ingrediente selecionado (nome_en como chave)
+  //Adiciona ou remove o ingrediente selecionado
   const handleIngredientClick = (nameKey) => {
     setSelectedIngredients((prevSelected) => {
       if (prevSelected.includes(nameKey)) {
@@ -33,7 +32,7 @@ const Home = () => {
     });
   };
 
-  // LÓGICA: Dispara a busca de receitas na API da Spoonacular
+  //Dispara a busca de receitas na API da Spoonacular
   const handleSearchRecipes = async () => {
     const ingredientNames = selectedIngredients;
 
@@ -52,12 +51,11 @@ const Home = () => {
     }
   };
 
-  // FUNÇÃO: Carrega a lista de ingredientes traduzidos do Supabase
+  //Carrega a lista de ingredientes traduzidos do Supabase
   const fetchInitialIngredients = async () => {
     setIsLoading(true);
     setError(null);
     try {
-      // Busca dados da tabela "ingredientes"
       const data = await Database.getTranslatedIngredients();
 
       // Mapeia para o formato de exibição (Nome PT para a tela, Nome EN para a chave)
@@ -79,38 +77,74 @@ const Home = () => {
     }
   };
 
+  //Busca os ingredientes iniciais ao carregar o componente
   useEffect(() => {
     fetchInitialIngredients();
   }, []);
 
-  // VARIÁVEIS DE EXIBIÇÃO
   const isSearching = searchTerm.length > 0;
   const hasSelected = selectedIngredients.length > 0;
   const isReadyToSearch = !isLoading && hasSelected;
 
-  // FILTRAGEM: Compara o termo de busca com o nome em PT
   const filteredIngredients = ingredientsList.filter((ing) =>
     ing.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Lógica para definir quais ingredientes renderizar
   let ingredientsToDisplay = [];
   if (showAllIngredients) {
     ingredientsToDisplay = ingredientsList;
   } else if (isSearching) {
     ingredientsToDisplay = filteredIngredients;
   } else if (hasSelected) {
-    // Se não está buscando e não clicou em 'Ver Todos', mostra apenas os selecionados
     ingredientsToDisplay = ingredientsList.filter((ing) =>
       selectedIngredients.includes(ing.nameKey)
     );
   }
 
-  // Condição para mostrar o Card de Ingredientes
   const shouldShowIngredientList =
     showAllIngredients || isSearching || hasSelected;
 
-  // --- RENDERIZAÇÃO ---
+  const primaryColor = "#388e3c";
+  const cardShadow = "0 4px 24px rgba(0,0,0,0.1)";
+
+  const featureCardMaxWidth = "75%";
+
+  const features = [
+    {
+      title: "Zero Desperdício e Máxima Economia",
+      icon: "🛒",
+      description:
+        "Diga adeus àquela comida que estraga na gaveta! Nossa ferramenta faz a 'pesquisa de geladeira' por você, encontrando receitas que utilizam seus ingredientes de forma criativa, garantindo que você economize e evite o estresse de cozinhar sem inspiração.", // Descrição expandida e humanizada
+      details: [
+        "Seu planejamento de refeições começa aqui",
+        "Cozinhe de forma inteligente",
+        "Menos idas inesperadas ao mercado",
+      ],
+    },
+    {
+      title: "Seleção Rápida e Interativa",
+      icon: "🔍",
+      description:
+        "Não perca tempo digitando. Encontre seus ingredientes usando a busca em tempo real ou filtre pela nossa lista de itens disponíveis. Com um simples clique, adicione ou remova itens para refinar sua lista e ver as sugestões imediatamente.", // NOVA DESCRIÇÃO
+      details: [
+        "Filtro inteligente em tempo real",
+        "Feedback visual imediato ao clicar",
+        "Lista reativa e sempre atualizada",
+      ],
+    },
+    {
+      title: "Salvar e Favoritar Receitas",
+      icon: "⭐",
+      description:
+        "Crie seu perfil, favorite as receitas que você ama e retorne a elas quando quiser! Sua próxima refeição favorita estará a apenas um clique de distância.",
+      details: [
+        "Crie seu perfil",
+        "Salve seus favoritos",
+        "Recupere facilmente",
+      ],
+    },
+  ];
+
   return (
     <Grid
       container
@@ -121,17 +155,138 @@ const Home = () => {
         padding: "16px 8px",
       }}
     >
-      <Grid item xs={12} sm={10} md={8}>
+      <Grid item xs={12} sm={10} md={10}>
         <Stack
-          spacing={3}
+          spacing={5}
           alignItems="center"
-          style={{ paddingTop: "16px", paddingBottom: "16px" }}
+          style={{ paddingTop: "24px", paddingBottom: "32px" }}
         >
+          {/*SEÇÃO DE TÍTULO PRINCIPAL E INTRODUÇÃO */}
+          <Stack spacing={1} style={{ width: "100%", padding: "8px 0" }}>
+            <Typography
+              variant="h3"
+              style={{
+                fontWeight: 900,
+                color: primaryColor,
+                textAlign: "center",
+                lineHeight: 1.1,
+              }}
+            >
+              Transforme Ingredientes em Refeições Incríveis!
+            </Typography>
+            <Typography
+              variant="subtitle1"
+              style={{
+                textAlign: "center",
+                color: "#424242",
+                padding: "0 8px",
+                maxWidth: 600,
+                margin: "auto",
+                marginTop: 20,
+              }}
+            >
+              Seu assistente de cozinha pessoal: cozinhe de forma inteligente,
+              evite desperdícios e descubra novas receitas com o que você já tem
+              em casa.
+            </Typography>
+          </Stack>
+
+          {/*STACK DE CARTÕES DE FUNCIONALIDADES/BENEFÍCIOS */}
+          <Stack
+            spacing={4}
+            alignItems="center"
+            style={{
+              width: "100%",
+              padding: "16px 0",
+            }}
+          >
+            {features.map((feature, index) => (
+              <Card
+                key={index}
+                style={{
+                  backgroundColor: "#F0F8FB",
+                  borderRadius: 16,
+                  width: "100%",
+                  maxWidth: featureCardMaxWidth,
+                  boxShadow: cardShadow,
+                  borderTop: `4px solid ${primaryColor}`,
+                  transition: "transform 0.2s",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                }}
+              >
+                <CardContent
+                  style={{ padding: "20px", backgroundColor: "#F0F8FB" }}
+                >
+                  <Typography
+                    variant="h4"
+                    style={{
+                      backgroundColor: "#F0F8FB",
+                      fontSize: "32px",
+                      textAlign: "center",
+                    }}
+                  >
+                    {feature.icon}
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    style={{
+                      backgroundColor: "#F0F8FB",
+                      fontWeight: 700,
+                      color: primaryColor,
+                      textAlign: "center",
+                    }}
+                  >
+                    {feature.title}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    style={{
+                      backgroundColor: "#F0F8FB",
+                      color: "#616161",
+                      padding: "10px 0",
+                      textAlign: "center",
+                    }}
+                  >
+                    {feature.description}
+                  </Typography>
+
+                  <Stack
+                    spacing={0.5}
+                    style={{ paddingLeft: 20, backgroundColor: "#F0F8FB" }}
+                  >
+                    {" "}
+                    {feature.details.map((detail, dIndex) => (
+                      <Typography
+                        key={dIndex}
+                        variant="caption"
+                        style={{
+                          backgroundColor: "#F0F8FB",
+                          color: "#424242",
+                          fontSize: "14px",
+                        }}
+                      >
+                        • {detail}
+                      </Typography>
+                    ))}
+                  </Stack>
+                </CardContent>
+              </Card>
+            ))}
+          </Stack>
+
+          {/* TÍTULO PRINCIPAL DA BUSCA */}
           <Typography
             variant="h5"
-            style={{ fontWeight: 800, color: "#388e3c", textAlign: "center" }}
+            style={{
+              fontWeight: 800,
+              color: primaryColor,
+              textAlign: "center",
+              paddingTop: "16px",
+            }}
           >
-            O que você tem na geladeira?
+            Selecione seus Ingredientes
           </Typography>
 
           {/* CAMPO DE BUSCA E BOTÃO "VER TODOS" */}
@@ -139,7 +294,7 @@ const Home = () => {
             direction="row"
             spacing={1}
             alignItems="center"
-            style={{ width: "100%" }}
+            style={{ width: "75%" }}
           >
             <Card
               style={{
@@ -147,6 +302,7 @@ const Home = () => {
                 borderRadius: 16,
                 boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
                 width: "100%",
+                alignItems: "center",
               }}
             >
               <TextField
@@ -160,11 +316,11 @@ const Home = () => {
                 }}
                 disabled={isLoading}
                 InputProps={{ style: { borderRadius: 10 } }}
-                InputLabelProps={{ style: { color: "#388e3c" } }}
+                InputLabelProps={{ style: { color: primaryColor } }}
               />
             </Card>
 
-            {/* BOTÃO DISCRETO PARA VER TODOS (FILTRO) */}
+            {/* BOTÃO DISCRETO PARA VER TODOS*/}
             <Button
               variant={showAllIngredients ? "contained" : "outlined"}
               color="primary"
@@ -178,9 +334,11 @@ const Home = () => {
                 padding: "0 12px",
                 fontSize: "12px",
                 borderRadius: 10,
-                backgroundColor: showAllIngredients ? "#388e3c" : "transparent",
-                borderColor: "#388e3c",
-                color: showAllIngredients ? "#fff" : "#388e3c",
+                backgroundColor: showAllIngredients
+                  ? primaryColor
+                  : "transparent",
+                borderColor: primaryColor,
+                color: showAllIngredients ? "#fff" : primaryColor,
               }}
               disabled={isLoading}
             >
@@ -188,7 +346,6 @@ const Home = () => {
             </Button>
           </Stack>
 
-          {/* EXIBIÇÃO DE ESTADOS: Loading e Erro */}
           {isLoading && (
             <Typography style={{ textAlign: "center", padding: "20px 0" }}>
               Carregando banco de ingredientes...
@@ -257,7 +414,14 @@ const Home = () => {
           <Button
             variant="contained"
             color="primary"
-            style={{ width: "100%", marginBottom: "16px" }}
+            style={{
+              width: "75%",
+              color: "black",
+              marginBottom: "16px",
+              backgroundColor: primaryColor,
+              padding: "12px 0",
+              borderRadius: 10,
+            }}
             onClick={handleSearchRecipes}
             disabled={!isReadyToSearch}
           >
@@ -281,7 +445,7 @@ const Home = () => {
                 Receitas Encontradas ({searchResults.length})
               </Typography>
 
-              {/* NOVO: Grid de Cards de Receitas */}
+              {/* Grid de Cards de Receitas */}
               <Grid container spacing={2}>
                 {searchResults.map((recipe) => (
                   <Grid item xs={12} sm={6} md={4} key={recipe.id}>

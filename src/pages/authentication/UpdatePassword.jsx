@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Card,
@@ -20,7 +20,7 @@ const UpdatePassword = () => {
   const [snackbarMsg, setSnackbarMsg] = useState("");
   const navigate = useNavigate();
 
-  // Função para atualizar a senha do usuário logado via link de recuperação.
+  // Atualiza a senha do usuário logado via link de recuperação.
   const handleUpdatePassword = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -63,7 +63,6 @@ const UpdatePassword = () => {
       alignItems="center"
       style={{
         minHeight: "100vh",
-        // Estilo temático de fundo (mesmo do Login/Register)
         background: "linear-gradient(135deg, #e0f2f7 0%, #c4e0e8 100%)",
         backgroundImage: 'url("/images/food_background.png")',
         backgroundSize: "cover",

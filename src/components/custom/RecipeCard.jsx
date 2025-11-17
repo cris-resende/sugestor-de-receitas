@@ -26,7 +26,7 @@ const RecipeCard = ({ recipe }) => {
     >
       <div
         style={{
-          height: "150px", // Altura fixa para mobile
+          height: "150px",
           backgroundImage: `url(${image})`,
           backgroundSize: "cover",
           backgroundPosition: "center",

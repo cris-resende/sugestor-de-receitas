@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
   Grid,
@@ -13,12 +13,11 @@ import {
 } from "../components";
 import RecipeAPI from "../services/RecipeAPI";
 import Database from "../services/Database";
-import { supabase } from "../services/SupabaseClient"; // Para obter o usuário logado
+import { supabase } from "../services/SupabaseClient";
 
 const RecipeDetails = () => {
   const { recipeId } = useParams();
 
-  // ESTADOS
   const [recipe, setRecipe] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -28,15 +27,12 @@ const RecipeDetails = () => {
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState("");
 
-  // NOVO ESTADO: Armazena o ID real do usuário logado
   const [currentUserId, setCurrentUserId] = useState(null);
 
-  // Função para salvar (ou remover) a receita como favorita
   const handleToggleFavorite = async () => {
     if (!currentUserId) return;
 
     try {
-      // Lógica de CREATE/DELETE, usando o ID real
       const isFav = await Database.toggleFavorite(
         currentUserId,
         Number(recipeId),
@@ -57,20 +53,17 @@ const RecipeDetails = () => {
     }
   };
 
-  // Função para lidar com a classificação por estrelas e comentário
+  // Lida com a classificação por estrelas e comentário
   const handleRatingChange = async (newValue) => {
-    if (!currentUserId) return; // Garante que o usuário esteja logado
+    if (!currentUserId) return;
 
-    // Usa a nota atual se for clique no botão
     const ratingValue =
       newValue === null || newValue === 0 ? userRating : newValue;
 
     setUserRating(ratingValue);
 
-    // Salva imediatamente se a nota for alterada nas estrelas
     if (ratingValue > 0) {
       try {
-        // Usa o ID real para salvar o rating
         await Database.saveRating(
           currentUserId,
           Number(recipeId),
@@ -87,18 +80,17 @@ const RecipeDetails = () => {
     }
   };
 
-  // Função para salvar o comentário (chamada pelo onBlur e pelo botão)
+  // Salvar o comentário
   const handleSaveComment = async () => {
     if (userRating === 0) {
       setSnackbarMsg("Por favor, dê uma nota antes de salvar o comentário.");
       setShowSnackbar(true);
       return;
     }
-    // Reutiliza o handleRatingChange com a nota existente
     await handleRatingChange(userRating);
   };
 
-  // Lógica para buscar os detalhes completos da receita
+  //Busca os detalhes completos da receita
   const fetchRecipeDetails = async () => {
     if (!recipeId) return;
 
@@ -128,7 +120,6 @@ const RecipeDetails = () => {
     }
   };
 
-  // Efeito para carregar os dados ao montar o componente
   useEffect(() => {
     fetchRecipeDetails();
   }, [recipeId]);
@@ -141,7 +132,6 @@ const RecipeDetails = () => {
     return tempDiv.textContent || tempDiv.innerText || "";
   };
 
-  // --- Renderização de Estados de Carregamento/Erro ---
   if (isLoading) {
     return (
       <Grid
@@ -178,15 +168,12 @@ const RecipeDetails = () => {
 
   const instructions = cleanHtml(recipe.instructions || recipe.summary);
 
-  // --- Renderização Principal (Mobile-First Moderno) ---
   return (
-    // Fragmento para envolver o Grid e o Snackbar
     <>
       <Grid
         container
         justifyContent="center"
         style={{
-          // Fundo temático
           background: "linear-gradient(135deg, #e0f2f7 0%, #c4e0e8 100%)",
           padding: "16px 8px",
         }}
@@ -206,7 +193,7 @@ const RecipeDetails = () => {
                 variant="h4"
                 style={{
                   fontWeight: 800,
-                  color: "#388e3c", // Cor temática
+                  color: "#388e3c",
                   textAlign: "left",
                   flexGrow: 1,
                 }}
@@ -222,10 +209,9 @@ const RecipeDetails = () => {
                 style={{
                   marginLeft: "16px",
                   minWidth: "56px",
-                  // Cores temáticas
                   background: isFavorited ? "#F44336" : "#388e3c",
                 }}
-                disabled={!currentUserId} // Desabilita se o ID for nulo (não logado)
+                disabled={!currentUserId}
               >
                 <Typography style={{ fontSize: "20px", color: "#fff" }}>
                   {isFavorited ? "★" : "☆"}
@@ -233,7 +219,7 @@ const RecipeDetails = () => {
               </Fab>
             </Stack>
 
-            {/* 2. IMAGEM E TEMPO DE PREPARO (SEÇÃO DE METADADOS) */}
+            {/* IMAGEM E TEMPO DE PREPARO */}
             <Card
               style={{
                 padding: 0,
@@ -284,7 +270,7 @@ const RecipeDetails = () => {
               </Stack>
             </Card>
 
-            {/* 3. CLASSIFICAÇÃO E COMENTÁRIO */}
+            {/* CLASSIFICAÇÃO E COMENTÁRIO */}
             <Card
               style={{
                 padding: 16,
@@ -343,7 +329,7 @@ const RecipeDetails = () => {
               </Stack>
             </Card>
 
-            {/* 4. INGREDIENTES NECESSÁRIOS */}
+            {/* INGREDIENTES NECESSÁRIOS */}
             <Card
               style={{
                 padding: 16,
@@ -381,7 +367,7 @@ const RecipeDetails = () => {
               </Grid>
             </Card>
 
-            {/* 5. MODO DE PREPARO */}
+            {/* MODO DE PREPARO */}
             <Card
               style={{
                 padding: 16,

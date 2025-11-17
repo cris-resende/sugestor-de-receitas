@@ -10,7 +10,7 @@ import {
   Snackbar,
   Fab,
   Box,
-  Modal, // Importado para exibir o modal de nome
+  Modal,
 } from "../components";
 import Database from "../services/Database";
 import Authentication from "../services/Authentication";
@@ -18,28 +18,26 @@ import RecipeCard from "../components/custom/RecipeCard";
 import { supabase } from "../services/SupabaseClient";
 import RecipeAPI from "../services/RecipeAPI";
 import CloseIcon from "@mui/icons-material/Close";
-import UpdateUsernameModal from "./authentication/UpdateUsernameModal"; // Importar o Modal de Nome
+import UpdateUsernameModal from "./authentication/UpdateUsernameModal";
 
 const Profile = () => {
   const navigate = useNavigate();
 
-  // ESTADOS
   const [favorites, setFavorites] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState("");
 
-  // ESTADOS DO USUÁRIO REAL
   const [userEmail, setUserEmail] = useState("Carregando...");
   const [currentUserId, setCurrentUserId] = useState(null);
-  const [isManaging, setIsManaging] = useState(false); // Controla a visibilidade do gerenciamento
-  const [userName, setUserName] = useState("Usuário"); // Nome real de exibição
-  const [showUsernameModal, setShowUsernameModal] = useState(false); // Estado do modal de nome
+  const [isManaging, setIsManaging] = useState(false);
+  const [userName, setUserName] = useState("Usuário");
+  const [showUsernameModal, setShowUsernameModal] = useState(false);
 
   const MOCK_USERNAME = "Usuário";
 
-  // Função para buscar informações do usuário logado (email e ID real)
+  // Busca informações do usuário logado
   const fetchUserData = async () => {
     try {
       const {
@@ -53,9 +51,9 @@ const Profile = () => {
 
         setUserEmail(user.email);
         setCurrentUserId(user.id);
-        setUserName(displayName); // Define o nome
+        setUserName(displayName);
 
-        return user.id; // Retorna o UUID real
+        return user.id;
       } else {
         navigate("/login", { replace: true });
         return null;
@@ -76,10 +74,8 @@ const Profile = () => {
     setError(null);
 
     try {
-      // 1. Busca a lista básica de favoritos USANDO O ID REAL
       const favsFromDb = await Database.getUserFavorites(userId);
 
-      // 2. Cria um array de Promises para buscar os detalhes e o Rating para CADA item
       const detailedFavsPromises = favsFromDb.map(async (fav) => {
         try {
           const spoonacularData = await RecipeAPI.getRecipeDetails(
@@ -120,12 +116,11 @@ const Profile = () => {
     }
   };
 
-  // Função para remover o favorito diretamente da lista
+  // Remove o favorito diretamente da lista
   const handleRemoveFavorite = async (recipeIdToRemove) => {
-    if (!currentUserId) return; // Não permite se não estiver logado
+    if (!currentUserId) return;
 
     try {
-      // Usa o ID REAL para remover o favorito
       await Database.toggleFavorite(
         currentUserId,
         Number(recipeIdToRemove),
@@ -133,7 +128,7 @@ const Profile = () => {
         true
       );
       setSnackbarMsg("Receita removida dos favoritos.");
-      fetchFavorites(currentUserId); // Recarrega a lista
+      fetchFavorites(currentUserId);
     } catch (err) {
       setSnackbarMsg("Erro ao remover favorito.");
     } finally {
@@ -152,12 +147,10 @@ const Profile = () => {
     }
   };
 
-  // Função para alternar o estado de gerenciamento (toggle)
   const handleToggleManagement = () => {
     setIsManaging((prev) => !prev);
   };
 
-  // Função para atualizar o nome no estado local após o sucesso do modal
   const handleUsernameUpdateSuccess = (newUsername) => {
     // Atualiza o nome exibido no header
     setUserName(newUsername);
@@ -169,7 +162,6 @@ const Profile = () => {
     });
   }, []);
 
-  // --- RENDERIZAÇÃO ---
   if (isLoading) {
     return (
       <Grid
@@ -201,7 +193,7 @@ const Profile = () => {
             spacing={3}
             style={{ paddingTop: "24px", paddingBottom: "32px" }}
           >
-            {/* 1. HEADER E INFORMAÇÕES BÁSICAS DO PERFIL */}
+            {/* HEADER E INFORMAÇÕES BÁSICAS DO PERFIL */}
             <Card
               elevation={4}
               style={{
@@ -245,7 +237,7 @@ const Profile = () => {
               </Stack>
             </Card>
 
-            {/* SEÇÃO DE GERENCIAMENTO (EXIBIÇÃO CONDICIONAL) */}
+            {/* GERENCIAMENTO DE CONTA */}
             {isManaging && (
               <Card
                 elevation={4}
@@ -264,7 +256,7 @@ const Profile = () => {
                   </Typography>
 
                   <Button
-                    onClick={() => setShowUsernameModal(true)} // AÇÃO: Abre o modal de alteração de nome
+                    onClick={() => setShowUsernameModal(true)}
                     style={{ justifyContent: "flex-start", color: "#388e3c" }}
                   >
                     Alterar Nome de Usuário
@@ -294,7 +286,7 @@ const Profile = () => {
               </Card>
             )}
 
-            {/* 2. RECEITAS FAVORITAS (EXIBIÇÃO CONDICIONAL) */}
+            {/* RECEITAS FAVORITAS */}
             {!isManaging && (
               <Card
                 elevation={4}
@@ -322,7 +314,6 @@ const Profile = () => {
                     {favorites.map((fav) => (
                       <Grid item xs={12} sm={6} md={4} key={fav.recipe_id}>
                         <Box sx={{ position: "relative" }}>
-                          {/* BOTÃO DE REMOVER FAVORITO */}
                           <Fab
                             size="small"
                             color="error"
@@ -339,7 +330,6 @@ const Profile = () => {
                           >
                             <CloseIcon fontSize="small" />
                           </Fab>
-                          {/* Card de Receita */}
                           <RecipeCard
                             recipe={{
                               id: fav.recipe_id,
@@ -349,7 +339,6 @@ const Profile = () => {
                               missedIngredientCount: 0,
                             }}
                           />
-                          {/* Exibe o Rating abaixo do Card */}
                           <Stack
                             direction="row"
                             spacing={1}
@@ -396,7 +385,7 @@ const Profile = () => {
           currentUserId={currentUserId}
           currentEmail={userEmail}
           currentName={userName}
-          onUpdateSuccess={handleUsernameUpdateSuccess} // Função de sucesso
+          onUpdateSuccess={handleUsernameUpdateSuccess}
           onClose={() => setShowUsernameModal(false)}
         />
       </Modal>
