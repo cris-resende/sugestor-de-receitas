@@ -1,7 +1,5 @@
  Aplicação de Sugestão Inteligente de Receitas
 
-"Sistema otimizado para a conversão eficiente de inventário de ingredientes em planos culinários viáveis."
-
 Este projeto constitui uma aplicação web destinada à sugestão personalizada de receitas, desenvolvida com uma abordagem mobile-first. O objetivo central da iniciativa é aprimorar a experiência culinária do usuário, facilitando a identificação de pratos relevantes e de alta qualidade com base exclusivamente nos ingredientes disponíveis em sua cozinha.
 
  Escopo e Objetivos Estratégicos
@@ -26,6 +24,7 @@ Componentes e Funções Primárias
       - Persistência de dados personalizados do usuário.
 
   - Estratégia Linguística (Supabase - Dicionário): É mantido um dicionário dentro do Supabase para realizar o mapeamento de nome_pt para nome_en. Isso garante que, embora a interface de seleção seja apresentada ao usuário em Português, as requisições à Spoonacular API sejam executadas em Inglês para maximizar a precisão dos resultados obtidos.
+
     
  Funcionalidades Críticas do Sistema
 
@@ -38,6 +37,7 @@ Componentes e Funções Primárias
   - Gestão de Preferências: Implementação de recursos para salvar e classificar (Rating) receitas favoritas, com persistência dos dados na estrutura Supabase.
 
   - Visualização Detalhada: Apresentação em uma página dedicada dos metadados completos da receita, incluindo título, imagem, lista detalhada de ingredientes e instruções de preparo.
+
 
  Instruções para Implantação Local do Projeto
 
@@ -52,10 +52,12 @@ Pré-requisitos Fundamentais
 
   - Chave de Acesso à API da Spoonacular.
 
-1. Obtenção do Código-Fonte
+
+ 1. Obtenção do Código-Fonte
 
 git clone [https://github.com/cris-resende/sugestor-de-receitas.git](https://github.com/cris-resende/sugestor-de-receitas.git)
 cd sugestor-de-receitas
+
 
 
 2. Instalação de Dependências
@@ -63,6 +65,7 @@ cd sugestor-de-receitas
 npm install
 # ou
 # yarn install
+
 
 
 3. Configuração do Ambiente
@@ -83,6 +86,8 @@ REACT_APP_SPOONACULAR_API_KEY= AIzaSyDhdUcFNsTLPkd_R0Cawz0ZlopO_DGKYeU
     messagingSenderId: "295651858837",
     appId: "1:295651858837:web:ac34d7dd3b3df9a8abfe9c"
   }; -->
+
+
 
 
 4. Inicialização do Servidor de Desenvolvimento
