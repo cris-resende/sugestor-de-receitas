@@ -1,5 +1,5 @@
 const BASE_URL = "https://api.spoonacular.com";
-const API_KEY = AIzaSyDhdUcFNsTLPkd_R0Cawz0ZlopO_DGKYeU;
+const API_KEY = 'AIzaSyDhdUcFNsTLPkd_R0Cawz0ZlopO_DGKYeU';
 
 const RecipeAPI = {
   // Busca receitas na API usando uma lista de ingredientes.
